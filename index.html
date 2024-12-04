@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Election Results</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            width: 80%;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .section-title {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+        .candidate {
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            background-color: #f9f9f9;
+        }
+        .candidate img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+        .candidate-name {
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .vote-count {
+            font-size: 16px;
+        }
+        .tally-bar {
+            width: 100%;
+            height: 20px;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+        .vote-buttons {
+            margin-top: 10px;
+        }
+        .vote-buttons button {
+            padding: 5px 10px;
+            margin: 5px;
+            cursor: pointer;
+        }
+        .edit-color {
+            margin-top: 10px;
+        }
+        .edit-color input {
+            padding: 5px;
+            width: 100px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="section-title">Presidential Election</div>
+        <div class="candidate" id="candidate-1">
+            <div class="candidate-name">INSERT Person's Name</div>
+            <img src="person1.jpg" alt="Candidate Photo">
+            <div class="vote-count">Counted Votes: <span id="votes-1">0</span></div>
+            <div class="vote-buttons">
+                <button onclick="changeVotes(1, 1)">+</button>
+                <button onclick="changeVotes(1, -1)">-</button>
+            </div>
+            <div class="tally-bar" id="tally-1" style="background-color: #4CAF50;"></div>
+            <div class="edit-color">
+                Edit Color: <input type="color" onchange="changeColor(1, this.value)">
+            </div>
+        </div>
+
+        <div class="candidate" id="candidate-2">
+            <div class="candidate-name">INSERT Person's Name</div>
+            <img src="person2.jpg" alt="Candidate Photo">
+            <div class="vote-count">Counted Votes: <span id="votes-2">0</span></div>
+            <div class="vote-buttons">
+                <button onclick="changeVotes(2, 1)">+</button>
+                <button onclick="changeVotes(2, -1)">-</button>
+            </div>
+            <div class="tally-bar" id="tally-2" style="background-color: #FF5733;"></div>
+            <div class="edit-color">
+                Edit Color: <input type="color" onchange="changeColor(2, this.value)">
+            </div>
+        </div>
+
+        <div class="candidate" id="candidate-3">
+            <div class="candidate-name">INSERT Person's Name</div>
+            <img src="person3.jpg" alt="Candidate Photo">
+            <div class="vote-count">Counted Votes: <span id="votes-3">0</span></div>
+            <div class="vote-buttons">
+                <button onclick="changeVotes(3, 1)">+</button>
+                <button onclick="changeVotes(3, -1)">-</button>
+            </div>
+            <div class="tally-bar" id="tally-3" style="background-color: #FFC300;"></div>
+            <div class="edit-color">
+                Edit Color: <input type="color" onchange="changeColor(3, this.value)">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let votes = {1: 0, 2: 0, 3: 0};
+        let colors = {1: "#4CAF50", 2: "#FF5733", 3: "#FFC300"};
+
+        function changeVotes(candidateId, change) {
+            votes[candidateId] += change;
+            document.getElementById(`votes-${candidateId}`).textContent = votes[candidateId];
+            updateTallyBar(candidateId);
+            updateResults();
+        }
+
+        function changeColor(candidateId, color) {
+            colors[candidateId] = color;
+            document.getElementById(`tally-${candidateId}`).style.backgroundColor = color;
+            updateResults();
+        }
+
+        function updateTallyBar(candidateId) {
+            const percentage = (votes[candidateId] / getTotalVotes()) * 100;
+            document.getElementById(`tally-${candidateId}`).style.width = `${percentage}%`;
+        }
+
+        function getTotalVotes() {
+            return votes[1] + votes[2] + votes[3];
+        }
+
+        function updateResults() {
+            localStorage.setItem("votes", JSON.stringify(votes));
+            localStorage.setItem("colors", JSON.stringify(colors));
+        }
+
+        // Load previous results from localStorage
+        window.onload = function() {
+            if(localStorage.getItem("votes") && localStorage.getItem("colors")) {
+                votes = JSON.parse(localStorage.getItem("votes"));
+                colors = JSON.parse(localStorage.getItem("colors"));
+                for (let i = 1; i <= 3; i++) {
+                    document.getElementById(`votes-${i}`).textContent = votes[i];
+                    document.getElementById(`tally-${i}`).style.width = `${(votes[i] / getTotalVotes()) * 100}%`;
+                    document.getElementById(`tally-${i}`).style.backgroundColor = colors[i];
+                }
+            }
+        }
+    </script>
+</body>
+</html>
